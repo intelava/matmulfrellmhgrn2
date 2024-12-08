@@ -166,6 +166,10 @@ class HGRNBitAttention(nn.Module):
             B, H, T, D = i.shape 
             
             for i in range(T):
+                print("Recurrent",self.recurrent_state.shape)
+                print("i",i.shape)
+                print("f", torch.diag_embed(f).shape)
+                
                 self.recurrent_state = torch.matmul(self.recurrent_state, torch.diag_embed(f)) + torch.outer(i, (1 - f))
                 o = torch.dot(self.recurrent_state, g)
 
@@ -177,7 +181,7 @@ class HGRNBitAttention(nn.Module):
         ########################################
 
 
-
+        ########################################asdfa
 
         ########################################
         # WHAT THE HELL IS THIS?
