@@ -147,8 +147,7 @@ class HGRNBitAttention(nn.Module):
 
         if mode == 'fused_recurrent':
             B, H, T, D = i.shape 
-            for _ in range(T):
-                #implement hgrn
+            
 
 
 
