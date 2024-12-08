@@ -62,12 +62,15 @@ def fused_recurrent_hgrn_fwd_kernel(
 
        
         #b_h = tl.dot(b_g, b_h) + tl.dot(b_x, (1 - b_g))
-        a_broadcast = b_x[:, None]  # Reshape 'a' to (4, 1)
-        b_broadcast = (1 - b_g)[None, :]  # Reshape 'b' to (1, 3)
+        a_broadcast = b_x[:, None]  
+        b_broadcast = (1 - b_g)[None, :]
 
-        # Step 2: Perform element-wise multiplication
+        
         outer_product = a_broadcast * b_broadcast 
-        b_h = tl.dot(b_g, b_h) + outer_product
+        elementwise_product = b_g * b_h
+
+        dot_product = tl.sum(elementwise_product)
+        b_h = dot_product + outer_product
         tl.store(p_o, b_h.to(p_o.dtype.element_ty), mask=mask)
 
         p_x += D
