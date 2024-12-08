@@ -145,7 +145,7 @@ class HGRNBitAttention(nn.Module):
         print(i.shape, f.shape, g.shape)
         if mode == 'fused_recurrent':
             B, H, T, D = i.shape 
-            for _ in range(T)
+           
 
             #o, recurrent_state = fused_recurrent_hgrn(i, f, g, initial_state=recurrent_state, output_final_state=use_cache)
         else:
