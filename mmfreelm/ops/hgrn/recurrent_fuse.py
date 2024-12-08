@@ -62,6 +62,10 @@ def fused_recurrent_hgrn_fwd_kernel(
 
        
         #b_h = tl.dot(b_g, b_h) + tl.dot(b_x, (1 - b_g))
+        b_h_torch = torch.as_tensor(b_h, device='cuda')  # Wrap as a PyTorch tensor on GPU
+
+# If you want to transfer it to the CPU:
+        b_h_torch_cpu = b_h_torch.to('cpu')
         numpy_array = b_h.numpy()  # Converts Triton tensor to NumPy array
 
         torch_tensor = torch.from_numpy(numpy_array)
