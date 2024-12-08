@@ -159,6 +159,9 @@ class HGRNBitAttention(nn.Module):
         if self.recurrent_state is None:
             self.recurrent_state = torch.zeros((B,T,D,D), dtype=torch.float32, device=i.device)
         else:
+            print(last_state[0].shape)
+            print(len(last_state))
+            print(type(last_state))
             self.recurrent_state = last_state[0] if use_cache else None
         ########################################
         # recurrent computation
