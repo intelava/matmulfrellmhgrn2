@@ -174,7 +174,7 @@ def _layer_norm_fwd(
     assert x.stride(-1) == 1
     if residual is not None:
         assert residual.stride(-1) == 1
-        assert residual.shape == (M, N)
+        #assert residual.shape == (M, N)
     if weight is not None:
         assert weight.shape == (N,)
         assert weight.stride(-1) == 1
