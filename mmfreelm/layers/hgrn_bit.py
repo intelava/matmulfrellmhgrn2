@@ -134,7 +134,7 @@ class HGRNBitAttention(nn.Module):
       
 
         
-
+        print("f"   , f.shape)
         ########################################
         f = f.sigmoid()
         # the lower bound for the first layer is zero
@@ -142,7 +142,7 @@ class HGRNBitAttention(nn.Module):
             f = lower_bound + (1 - lower_bound) * f
         ########################################
 
-
+        print("f"   , f.shape)
 
         #i = swiglu(i, 1 - f) NOT USED
 
@@ -152,7 +152,7 @@ class HGRNBitAttention(nn.Module):
             i = i.mul_(attention_mask.unsqueeze(-1))
         i, f = map(lambda x: rearrange(x, 'b l (h d) -> b h l d', h=self.num_heads), (i, f))
 
-        
+        print("f"   , f.shape)
 
 
         if self.recurrent_state is None:
@@ -170,7 +170,7 @@ class HGRNBitAttention(nn.Module):
                 print("i",i.shape)
                 print("f",f.shape)
                 #diagonalize f not with diag_embed
-                
+
 
                 print("f", torch.diag_embed(f).shape)
 
