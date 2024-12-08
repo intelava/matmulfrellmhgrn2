@@ -155,7 +155,7 @@ class HGRNBitAttention(nn.Module):
 
 
 
-        B, H, T, D = i.shape
+        B, T, D = i.shape
         if self.recurrent_state is None:
             self.recurrent_state = torch.zeros((B,T,D,D), dtype=torch.float32, device=i.device)
         else:
