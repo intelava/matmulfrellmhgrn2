@@ -168,8 +168,12 @@ class HGRNBitAttention(nn.Module):
             for i in range(T):
                 print("Recurrent",self.recurrent_state.shape)
                 print("i",i.shape)
-                print("f", torch.diag_embed(f).shape)
+                print("f",f.shape)
+                #diagonalize f not with diag_embed
                 
+
+                print("f", torch.diag_embed(f).shape)
+
                 self.recurrent_state = torch.matmul(self.recurrent_state, torch.diag_embed(f)) + torch.outer(i, (1 - f))
                 o = torch.dot(self.recurrent_state, g)
 
