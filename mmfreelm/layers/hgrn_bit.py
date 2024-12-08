@@ -169,7 +169,7 @@ class HGRNBitAttention(nn.Module):
             for _ in range(T):
                 #diagonalize f not with diag_embed
 
-
+                print("Rec", self.recurrent_state.shape)
                 print("f", torch.diag_embed(f).shape)
 
                 self.recurrent_state = torch.matmul(self.recurrent_state, torch.diag_embed(f)) + torch.outer(i, (1 - f))
