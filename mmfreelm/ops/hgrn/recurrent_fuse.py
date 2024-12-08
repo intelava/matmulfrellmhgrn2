@@ -62,8 +62,10 @@ def fused_recurrent_hgrn_fwd_kernel(
 
        
         #b_h = tl.dot(b_g, b_h) + tl.dot(b_x, (1 - b_g))
-        print(b_h)
-        b_h = torch.dot(b_g, torch.from_numpy(b_h).float(b_h)) + torch.outer(b_x, (1 - b_g))
+        numpy_array = b_h.numpy()  # Converts Triton tensor to NumPy array
+
+        torch_tensor = torch.from_numpy(numpy_array)
+        b_h = torch.dot(b_g, torch.from_numpy(torch_tensor).float(b_h)) + torch.outer(b_x, (1 - b_g))
         tl.store(p_o, b_h.to(p_o.dtype.element_ty), mask=mask)
 
         p_x += D
