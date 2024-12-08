@@ -62,7 +62,7 @@ def fused_recurrent_hgrn_fwd_kernel(
 
        
         #b_h = tl.dot(b_g, b_h) + tl.dot(b_x, (1 - b_g))
-        b_h = torch.dot(b_g, torch.from_numpy(img).float(b_h)) + torch.outer(b_x, (1 - b_g))
+        b_h = torch.dot(b_g, torch.from_numpy(b_h).float(b_h)) + torch.outer(b_x, (1 - b_g))
         tl.store(p_o, b_h.to(p_o.dtype.element_ty), mask=mask)
 
         p_x += D
@@ -160,7 +160,7 @@ class FusedRecurrentHGRNFunction(torch.autograd.Function):
             STORE_FINAL_STATE=final_state is not None
         )
         ctx.save_for_backward(g, o, initial_state)
-        return torch.dot(o, final_state)
+        return torch.dot(o, new_gate)
 
     @staticmethod
     @contiguous
