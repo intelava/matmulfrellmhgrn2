@@ -172,8 +172,8 @@ class HGRNBitAttention(nn.Module):
                 print("Rec", self.recurrent_state.shape)
                 print("f", torch.diag_embed(f).shape)
 
-                recurrent_state = torch.matmul(recurrent_state, torch.diag_embed(f)) + torch.einsum('...i,...j->...ij', i, (1 - f))
-                o = torch.inner(recurrent_state, g)
+                self.recurrent_state = torch.matmul(self.recurrent_state, torch.diag_embed(f)) + torch.einsum('...i,...j->...ij', i, (1 - f))
+                o = torch.inner(self.recurrent_state, g)
 
             
 
