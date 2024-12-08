@@ -62,14 +62,12 @@ def fused_recurrent_hgrn_fwd_kernel(
 
        
         #b_h = tl.dot(b_g, b_h) + tl.dot(b_x, (1 - b_g))
-        b_h_torch = torch.as_tensor(b_h)  # Wrap as a PyTorch tensor on GPU
+        a_broadcast = b_x[:, None]  # Reshape 'a' to (4, 1)
+        b_broadcast = (1 - b_g)[None, :]  # Reshape 'b' to (1, 3)
 
-# If you want to transfer it to the CPU:
-        b_h_torch_cpu = b_h_torch.to('cpu')
-        numpy_array = b_h.numpy()  # Converts Triton tensor to NumPy array
-
-        torch_tensor = torch.from_numpy(numpy_array)
-        b_h = torch.dot(b_g, torch.from_numpy(torch_tensor).float(b_h)) + torch.outer(b_x, (1 - b_g))
+        # Step 2: Perform element-wise multiplication
+        outer_product = a_broadcast * b_broadcast 
+        b_h = tl.dot(b_g) + outer_product
         tl.store(p_o, b_h.to(p_o.dtype.element_ty), mask=mask)
 
         p_x += D
