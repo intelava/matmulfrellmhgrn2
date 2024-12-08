@@ -151,7 +151,7 @@ class HGRNBitAttention(nn.Module):
         # dealing with left-padding
         if attention_mask is not None:
             i = i.mul_(attention_mask.unsqueeze(-1))
-        i, f = map(lambda x: rearrange(x, 'b l (h d) -> b h l d', h=self.num_heads), (i, f))
+        #i, f = map(lambda x: rearrange(x, 'b l (h d) -> b h l d', h=self.num_heads), (i, f))
 
 
 
