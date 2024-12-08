@@ -98,7 +98,7 @@ class HGRNBitAttention(nn.Module):
         mode = 'fused_recurrent' if hidden_states.shape[1] == 1 else self.mode
 
         last_state = past_key_values[self.layer_idx] if use_cache else None
-
+        print("last_state", last_state.shape)
         """self.mode = mode
         self.hidden_size = hidden_size
         self.num_heads = num_heads
@@ -130,8 +130,7 @@ class HGRNBitAttention(nn.Module):
             f = self.f_proj(hidden_states)
             g = self.g_proj(hidden_states)
 
-        print("hidden_states", hidden_states.shape)
-        print("input shape", self.input_dim)
+      
 
         
 
@@ -142,7 +141,7 @@ class HGRNBitAttention(nn.Module):
             f = lower_bound + (1 - lower_bound) * f
         ########################################
 
-        print(f.shape)
+
 
         #i = swiglu(i, 1 - f) NOT USED
 
@@ -152,10 +151,13 @@ class HGRNBitAttention(nn.Module):
             i = i.mul_(attention_mask.unsqueeze(-1))
         i, f = map(lambda x: rearrange(x, 'b l (h d) -> b h l d', h=self.num_heads), (i, f))
 
-        print(f.shape)
-
-
         
+
+
+        if self.recurrent_state is None:
+            self.recurrent_state = torch.zeros(i.shape[0], i.shape[1], self.hidden_size, dtype=torch.float32, device=i.device)
+        else:
+            self.recurrent_state = last_state[0] if use_cache else None
         ########################################
         # recurrent computation
 
@@ -163,8 +165,10 @@ class HGRNBitAttention(nn.Module):
             B, H, T, D = i.shape 
             
             for i in range(T):
-                self.recurrent_state = torch.dot(self.recurrent_state, torch.diag_embed(f, offset=0, dim1=-2, dim2=-1)) + torch.outer(i, (1 - f))
+                self.recurrent_state = torch.dot(self.recurrent_state, torch.diag_embed(f)) + torch.outer(i, (1 - f))
                 o = torch.dot(self.recurrent_state, g)
+
+            
 
             #o, recurrent_state = fused_recurrent_hgrn(i, f, g, initial_state=recurrent_state, output_final_state=use_cache)
         else:
