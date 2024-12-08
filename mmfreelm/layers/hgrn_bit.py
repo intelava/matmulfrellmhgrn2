@@ -157,7 +157,7 @@ class HGRNBitAttention(nn.Module):
 
         B, H, T, D = i.shape
         if self.recurrent_state is None:
-            self.recurrent_state = torch.zeros((B,T,D), dtype=torch.float32, device=i.device)
+            self.recurrent_state = torch.zeros((B,T,D,D), dtype=torch.float32, device=i.device)
         else:
             self.recurrent_state = last_state[0] if use_cache else None
         ########################################
@@ -172,8 +172,8 @@ class HGRNBitAttention(nn.Module):
                 print("Rec", self.recurrent_state.shape)
                 print("f", torch.diag_embed(f).shape)
 
-                self.recurrent_state = torch.matmul(self.recurrent_state, torch.diag_embed(f)) + torch.outer(i, (1 - f))
-                o = torch.dot(self.recurrent_state, g)
+                recurrent_state = torch.matmul(recurrent_state, torch.diag_embed(f)) + torch.einsum('...i,...j->...ij', i, (1 - f))
+                o = torch.inner(recurrent_state, g)
 
             
 
