@@ -99,6 +99,16 @@ class HGRNBitAttention(nn.Module):
 
         last_state = past_key_values[self.layer_idx] if use_cache else None
 
+        """self.mode = mode
+        self.hidden_size = hidden_size
+        self.num_heads = num_heads
+        self.expand_ratio = expand_ratio
+        self.input_dim = int(hidden_size * expand_ratio)"""
+        print("hidden_states", hidden_states.shape)
+        print("hidden_size", self.hidden_size)
+        print("num_heads", self.num_heads)
+        print("expand_ratio", self.expand_ratio)
+        print("input_dim", self.input_dim)
 
         if self.use_short_conv:
             conv_state = last_state[0] if use_cache else None
@@ -120,13 +130,9 @@ class HGRNBitAttention(nn.Module):
             f = self.f_proj(hidden_states)
             g = self.g_proj(hidden_states)
 
-        print(i.shape)
-        print(f.shape)
-        print(g.shape)
-        print(hidden_states.shape)
-        print(self.hidden_size)
-        print(self.num_heads)
-        print(self.input_dim)
+        print("hidden_states", hidden_states.shape)
+        print("input shape", self.input_dim)
+
         
 
         ########################################
