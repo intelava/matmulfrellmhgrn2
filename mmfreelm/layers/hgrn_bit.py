@@ -57,7 +57,8 @@ class HGRNBitAttention(nn.Module):
         self.f_proj = BitLinear(hidden_size, self.input_dim, bias=False)#g
         self.g_proj = BitLinear(hidden_size, self.input_dim, bias=False)#o
         #create recurrent state
-        self.recurrent_state = torch.zeros((self.hidden_size, self.hidden_size), dtype=torch.float32, device='cuda')
+
+        #self.recurrent_state = torch.zeros((self.hidden_size, self. ), dtype=torch.float32, device='cuda')
 
         if use_short_conv:
             self.conv_size = conv_size
@@ -119,6 +120,9 @@ class HGRNBitAttention(nn.Module):
             f = self.f_proj(hidden_states)
             g = self.g_proj(hidden_states)
 
+        print(i.shape)
+        print(f.shape)
+        print(g.shape)
 
         ########################################
         f = f.sigmoid()
