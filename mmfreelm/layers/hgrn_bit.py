@@ -56,6 +56,8 @@ class HGRNBitAttention(nn.Module):
         self.i_proj = BitLinear(hidden_size, self.input_dim, bias=False)#i
         self.f_proj = BitLinear(hidden_size, self.input_dim, bias=False)#g
         self.g_proj = BitLinear(hidden_size, self.input_dim, bias=False)#o
+        #create recurrent state
+        self.recurrent_state = torch.zeros((self.hidden_size, self.hidden_size), dtype=torch.float32, device='cuda')
 
         if use_short_conv:
             self.conv_size = conv_size
@@ -139,13 +141,17 @@ class HGRNBitAttention(nn.Module):
 
 
         recurrent_state = last_state[-1] if use_cache else None
+        print(recurrent_state.shape)
         ########################################
         # recurrent computation
-        print(type(i), type(f), type(g))
-        print(i.shape, f.shape, g.shape)
+
         if mode == 'fused_recurrent':
             B, H, T, D = i.shape 
-           
+            for _ in range(T):
+                #implement hgrn
+
+
+
 
             #o, recurrent_state = fused_recurrent_hgrn(i, f, g, initial_state=recurrent_state, output_final_state=use_cache)
         else:
