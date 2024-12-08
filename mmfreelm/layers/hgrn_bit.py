@@ -135,9 +135,6 @@ class HGRNBitAttention(nn.Module):
             g = self.g_proj(hidden_states)
 
       
-
-        
-        print("f"   , f.shape)
         
         ########################################
         f = f.sigmoid()
@@ -156,7 +153,7 @@ class HGRNBitAttention(nn.Module):
             i = i.mul_(attention_mask.unsqueeze(-1))
         i, f = map(lambda x: rearrange(x, 'b l (h d) -> b h l d', h=self.num_heads), (i, f))
 
-        print("f"   , f.shape)
+
 
         B, H, T, D = i.shape
         if self.recurrent_state is None:
@@ -205,7 +202,7 @@ class HGRNBitAttention(nn.Module):
         #LAST LAYER
         #o = self.g_norm(self.g_proj(hidden_states), rearrange(o, 'b h l d -> b l (h d)'))
         
-        o = self.rms_norm(o)
+        o = self.rms_norm_custom(o)
         o = self.o_proj(o)
 
         return o, None, past_key_values
