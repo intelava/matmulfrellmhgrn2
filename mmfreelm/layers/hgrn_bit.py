@@ -140,17 +140,16 @@ class HGRNBitAttention(nn.Module):
 
 
 
-        recurrent_state = last_state[-1] if use_cache else None
-        print(recurrent_state.shape)
+        
         ########################################
         # recurrent computation
 
         if mode == 'fused_recurrent':
             B, H, T, D = i.shape 
             
-
-
-
+            for i in range(T):
+                self.recurrent_state = torch.dot(self.recurrent_state, torch.diag(f)) + torch.outer(i, (1 - f))
+                o = torch.dot(self.recurrent_state, g)
 
             #o, recurrent_state = fused_recurrent_hgrn(i, f, g, initial_state=recurrent_state, output_final_state=use_cache)
         else:
