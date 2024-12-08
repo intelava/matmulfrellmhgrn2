@@ -173,7 +173,7 @@ class HGRNBitAttention(nn.Module):
                 print("f", torch.diag_embed(f).shape)
 
                 self.recurrent_state = torch.matmul(self.recurrent_state, torch.diag_embed(f)) + torch.einsum('...i,...j->...ij', i, (1 - f))
-                o = torch.inner(self.recurrent_state, g)
+                o = torch.matmul(self.recurrent_state, g.unsqueeze(-1)).squeeze(-1)
 
             
 
@@ -201,7 +201,8 @@ class HGRNBitAttention(nn.Module):
 
         #LAST LAYER
         #o = self.g_norm(self.g_proj(hidden_states), rearrange(o, 'b h l d -> b l (h d)'))
-        o = torch.nn.RMSNorm(o)
+        rms_norm = torch.nn.RMSNorm(o.shape[-1])
+        o = rms_norm(o)
         o = self.o_proj(o)
 
         return o, None, past_key_values
