@@ -42,7 +42,7 @@ class HGRNBitAttention(nn.Module):
         self.expand_ratio = expand_ratio
         self.input_dim = int(hidden_size * expand_ratio)
         self.head_dim = self.input_dim // self.num_heads
-
+        self.recurrent_state = None
         self.use_short_conv = use_short_conv
         self.conv_size = conv_size
         self.conv_bias = conv_bias
