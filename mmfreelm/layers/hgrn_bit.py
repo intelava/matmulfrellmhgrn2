@@ -49,7 +49,7 @@ class HGRNBitAttention(nn.Module):
         self.share_conv_kernel = share_conv_kernel
 
 
-        self.rms_norm = torch.nn.RMSNorm(hidden_size)
+        self.rms_norm_custom = torch.nn.RMSNorm(hidden_size)
 
         self.layer_idx = layer_idx
 
@@ -172,7 +172,7 @@ class HGRNBitAttention(nn.Module):
             for _ in range(T):
                 #diagonalize f not with diag_embed
 
-                #print("Rec", self.recurrent_state.shape)
+                print("Rec", self.recurrent_state.shape)
                 #print("f", torch.diag_embed(f).shape)
 
                 self.recurrent_state = torch.matmul(self.recurrent_state, torch.diag_embed(f)) + torch.einsum('...i,...j->...ij', i, (1 - f))
