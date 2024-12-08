@@ -123,6 +123,11 @@ class HGRNBitAttention(nn.Module):
         print(i.shape)
         print(f.shape)
         print(g.shape)
+        print(hidden_states.shape)
+        print(self.hidden_size)
+        print(self.num_heads)
+        print(self.input_dim)
+        
 
         ########################################
         f = f.sigmoid()
