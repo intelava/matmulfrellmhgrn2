@@ -67,7 +67,7 @@ def fused_recurrent_hgrn_fwd_kernel(
 
         # Step 2: Perform element-wise multiplication
         outer_product = a_broadcast * b_broadcast 
-        b_h = tl.dot(b_g) + outer_product
+        b_h = tl.dot(b_g, b_h) + outer_product
         tl.store(p_o, b_h.to(p_o.dtype.element_ty), mask=mask)
 
         p_x += D
