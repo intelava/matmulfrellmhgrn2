@@ -70,7 +70,7 @@ def fused_recurrent_hgrn_fwd_kernel(
         elementwise_product = b_g * b_h
 
         dot_product = tl.sum(elementwise_product)
-        b_h = dot_product + outer_product
+        b_h = elementwise_product + outer_product
         tl.store(p_o, b_h.to(p_o.dtype.element_ty), mask=mask)
 
         p_x += D
