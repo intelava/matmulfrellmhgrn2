@@ -127,7 +127,7 @@ class HGRNBitAttention(nn.Module):
             f = lower_bound + (1 - lower_bound) * f
         ########################################
 
-        
+        print(f.shape)
 
         #i = swiglu(i, 1 - f) NOT USED
 
@@ -137,7 +137,7 @@ class HGRNBitAttention(nn.Module):
             i = i.mul_(attention_mask.unsqueeze(-1))
         i, f = map(lambda x: rearrange(x, 'b l (h d) -> b h l d', h=self.num_heads), (i, f))
 
-
+        print(f.shape)
 
 
         
