@@ -101,6 +101,7 @@ class HGRNBitAttention(nn.Module):
         mode = 'fused_recurrent' if hidden_states.shape[1] == 1 else self.mode
 
         last_state = past_key_values[self.layer_idx] if use_cache else None
+        print("Past Key Values", len(past_key_values))
         if last_state is not None:
             print("last_state", last_state.shape)
         """self.mode = mode
