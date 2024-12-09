@@ -469,7 +469,7 @@ class LayerNormLinearQuantFn(torch.autograd.Function):
 
     @staticmethod
     @contiguous
-    def backward(ctx, dout, *args):
+    def backward(ctx, dout, *args, retain_graph=True):
         x, norm_weight, norm_bias, linear_weight, mean, rstd = ctx.saved_tensors
         dout = dout.reshape(-1, dout.shape[-1])
         dy = F.linear(dout, linear_weight.t())
