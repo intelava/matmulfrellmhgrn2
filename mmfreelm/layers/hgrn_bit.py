@@ -108,11 +108,11 @@ class HGRNBitAttention(nn.Module):
         self.num_heads = num_heads
         self.expand_ratio = expand_ratio
         self.input_dim = int(hidden_size * expand_ratio)"""
-        print("hidden_states", hidden_states.shape)
+        """print("hidden_states", hidden_states.shape)
         print("hidden_size", self.hidden_size)
         print("num_heads", self.num_heads)
         print("expand_ratio", self.expand_ratio)
-        print("input_dim", self.input_dim)
+        print("input_dim", self.input_dim)"""
 
         if self.use_short_conv:
             conv_state = last_state[0] if use_cache else None
@@ -159,7 +159,7 @@ class HGRNBitAttention(nn.Module):
         if self.recurrent_state is None:
             self.recurrent_state = torch.zeros((B,T,D,D), dtype=torch.float32, device=i.device)
         else:
-            print(last_state[0].shape)
+            #print(last_state[0].shape)
             print(len(last_state))
             print(type(last_state))
             self.recurrent_state = last_state[0] if use_cache else None
@@ -172,7 +172,7 @@ class HGRNBitAttention(nn.Module):
             for _ in range(T):
                 #diagonalize f not with diag_embed
 
-                print("Rec", self.recurrent_state.shape)
+                #print("Rec", self.recurrent_state.shape)
                 #print("f", torch.diag_embed(f).shape)
 
                 self.recurrent_state = torch.matmul(self.recurrent_state, torch.diag_embed(f)) + torch.einsum('...i,...j->...ij', i, (1 - f))
