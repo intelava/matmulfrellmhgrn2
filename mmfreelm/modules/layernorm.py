@@ -461,8 +461,7 @@ class LayerNormFn(torch.autograd.Function):
         # reshape input data into 2D tensor
         x = x.reshape(-1, x.shape[-1])
         if residual is not None:
-            print(residual.shape)
-            print(x_shape_og)
+        
             #assert residual.shape == x_shape_og
             residual = residual.reshape(-1, residual.shape[-1])
         residual_dtype = (

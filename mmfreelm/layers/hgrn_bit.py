@@ -206,7 +206,6 @@ class HGRNBitAttention(nn.Module):
         o = self.rms_norm_custom(o)
         o = self.o_proj(o)
 
-        print("FINISSHHEEDD")
         return o, None, past_key_values
 
     def init_state(self, batch_size: int) -> Tuple[torch.Tensor]:
