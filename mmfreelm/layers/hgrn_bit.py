@@ -101,7 +101,8 @@ class HGRNBitAttention(nn.Module):
         mode = 'fused_recurrent' if hidden_states.shape[1] == 1 else self.mode
 
         last_state = past_key_values[self.layer_idx] if use_cache else None
-        print("Past Key Values", len(past_key_values))
+        if past_key_values is not None:
+            print("Past Key Values", len(past_key_values))
         if last_state is not None:
             print("last_state", last_state.shape)
         """self.mode = mode
@@ -161,8 +162,6 @@ class HGRNBitAttention(nn.Module):
             self.recurrent_state = torch.zeros((B,T,D,D), dtype=torch.float32, device=i.device)
         else:
             #print(last_state[0].shape)
-            print(len(last_state))
-            print(type(last_state))
             self.recurrent_state = last_state[0] if use_cache else None
         ########################################
         # recurrent computation
