@@ -59,9 +59,8 @@ class HGRNBitAttention(nn.Module):
         self.i_proj = BitLinear(hidden_size, self.input_dim, bias=False)#i
         self.f_proj = BitLinear(hidden_size, self.input_dim, bias=False)#g
         self.g_proj = BitLinear(hidden_size, self.input_dim, bias=False)#o
-        #create recurrent state
 
-        #self.recurrent_state = torch.zeros((self.hidden_size, self. ), dtype=torch.float32, device='cuda')
+        
 
         if use_short_conv:
             self.conv_size = conv_size
@@ -105,16 +104,7 @@ class HGRNBitAttention(nn.Module):
             print("Past Key Values", len(past_key_values))
         if last_state is not None:
             print("last_state", last_state.shape)
-        """self.mode = mode
-        self.hidden_size = hidden_size
-        self.num_heads = num_heads
-        self.expand_ratio = expand_ratio
-        self.input_dim = int(hidden_size * expand_ratio)"""
-        """print("hidden_states", hidden_states.shape)
-        print("hidden_size", self.hidden_size)
-        print("num_heads", self.num_heads)
-        print("expand_ratio", self.expand_ratio)
-        print("input_dim", self.input_dim)"""
+       
 
         if self.use_short_conv:
             conv_state = last_state[0] if use_cache else None
@@ -145,63 +135,38 @@ class HGRNBitAttention(nn.Module):
             f = lower_bound + (1 - lower_bound) * f
         ########################################
 
-        
-
-        #i = swiglu(i, 1 - f) NOT USED
+    
 
 
         # dealing with left-padding
         if attention_mask is not None:
             i = i.mul_(attention_mask.unsqueeze(-1))
-        #i, f = map(lambda x: rearrange(x, 'b l (h d) -> b h l d', h=self.num_heads), (i, f))
-
 
 
         B, T, D = i.shape
         if self.recurrent_state is None:
             self.recurrent_state = torch.zeros((B,T,D,D), dtype=torch.float32, device=i.device)
         
-        ########################################
-        # recurrent computation
 
         if mode == 'fused_recurrent':
-        
-            
             for _ in range(T):
-                #diagonalize f not with diag_embed
-
-                #print("Rec", self.recurrent_state.shape)
-                #print("f", torch.diag_embed(f).shape)
 
                 self.recurrent_state = torch.matmul(self.recurrent_state, torch.diag_embed(f)) + torch.einsum('...i,...j->...ij', i, (1 - f))
                 o = torch.matmul(self.recurrent_state, g.unsqueeze(-1)).squeeze(-1)
 
-            
-
-            #o, recurrent_state = fused_recurrent_hgrn(i, f, g, initial_state=recurrent_state, output_final_state=use_cache)
         else:
             raise NotImplementedError(f"Not supported mode `{mode}`.")
-        ########################################
-
-
-        ########################################asdfa
-
-        ########################################
-        # WHAT THE HELL IS THIS?
+        
+     
         if past_key_values is not None:
             if self.use_short_conv:
                 if self.share_conv_kernel:
-                    last_state = (conv_state, recurrent_state)
+                    last_state = (conv_state, self.recurrent_state)
                 else:
-                    last_state = (conv_state_i, conv_state_f, recurrent_state)
+                    last_state = (conv_state_i, conv_state_f, self.recurrent_state)
             else:
-                last_state = (recurrent_state,)
+                last_state = (self.recurrent_state,)
             past_key_values.update(last_state, self.layer_idx, i.shape[2])
-        #########################################
-
-
-        #LAST LAYER
-        #o = self.g_norm(self.g_proj(hidden_states), rearrange(o, 'b h l d -> b l (h d)'))
         
         o = self.rms_norm_custom(o)
         o = self.o_proj(o)
